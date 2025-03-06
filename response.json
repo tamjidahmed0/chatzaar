@@ -1,0 +1,66 @@
+[
+    {
+        "id": "5f57ffff-21ae-484b-a6d8-9799268721b4",
+        "object": "chat.completion",
+        "created": "2025-03-05T15:35:13.590Z",
+        "model": "EchoGPT",
+        "choices": [
+            {
+                "index": 0,
+                "message": {
+                    "role": "assistant",
+                    "content": "Hello! I'm thrilled to be your helpful assistant. How can I assist you today? Do you have a specific task or problem you'd like help with? I'm all ears!",
+                    "refusal": null
+                },
+                "logprobs": null,
+                "finish_reason": "stop"
+            }
+        ],
+        "usage": {
+            "prompt_tokens": 6,
+            "completion_tokens": 37,
+            "total_tokens": 43,
+            "prompt_tokens_details": {
+                "cached_tokens": 0
+            },
+            "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "accepted_prediction_tokens": 37,
+                "rejected_prediction_tokens": 0
+            }
+        },
+        "system_fingerprint": "fp_6b68a8204b"
+    },
+    {
+        "id": "d527f866-915c-4143-ba6f-aacaa7a09ccb",
+        "object": "chat.completion",
+        "created": "2025-03-05T15:37:03.798Z",
+        "model": "EchoGPT",
+        "choices": [
+            {
+                "index": 0,
+                "message": {
+                    "role": "assistant",
+                    "content": "I don't have a personal name. I'm an AI assistant, trained to help answer your questions and provide information on a wide range of topics. I'm often referred to as \"Assistant,\" \"AI Assistant,\" or \"Chatbot,\" but I don't have a personal identity or name in the classical sense.",
+                    "refusal": null
+                },
+                "logprobs": null,
+                "finish_reason": "stop"
+            }
+        ],
+        "usage": {
+            "prompt_tokens": 3,
+            "completion_tokens": 63,
+            "total_tokens": 66,
+            "prompt_tokens_details": {
+                "cached_tokens": 0
+            },
+            "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "accepted_prediction_tokens": 63,
+                "rejected_prediction_tokens": 0
+            }
+        },
+        "system_fingerprint": "fp_6b68a8204b"
+    }
+]
