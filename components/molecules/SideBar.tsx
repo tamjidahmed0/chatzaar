@@ -4,7 +4,7 @@ import NavLink from '../atoms/NavLink'
 const SideBar = () => {
     return (
         <div className=' hidden lg:block'>
-            <div className='text-[28px] capitalize font-bold mt-10 mx-5'>
+            <div className='text-[28px] capitalize font-bold mt-10 mx-5 text-white'>
                 <p>chatZaar</p>
             </div>
 

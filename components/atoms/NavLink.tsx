@@ -1,40 +1,104 @@
-import React from 'react'
-import { History , Store, LayoutDashboard , HelpCircle, Gem} from 'lucide-react'
+'use client'
+import React, { useEffect, useState } from 'react'
+import { History, Store, LayoutDashboard, HelpCircle, Gem, Edit } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
+import getProfile from '@/lib/getProfile'
+
+
+
+
+interface Profile {
+    photo: string;
+    name: string;
+    email: string;
+}
+
 
 const NavLink = () => {
+    const [result, setResult] = useState<Profile | null>(null);
+
+    useEffect(() => {
+
+        const request = async () => {
+            const results = await getProfile()
+            setResult(results)
+            console.log(results)
+        }
+
+        request()
+
+    }, [])
+
+
+
+
     return (
-        <div className=' flex flex-col gap-8 px-4'>
-            <p className='text-[14px] capitalize'>Engagement</p>
+        <div className='flex flex-col gap-24'>
 
-            <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold'>
-                <History size={25} />
-                <p>history</p>
-            </Link>
 
-            <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold'>
-                <Store size={25} />
-                <p>store</p>
-            </Link>
+            <div className='flex flex-col gap-5 px-4 '>
 
-            <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold'>
-                <LayoutDashboard size={25} />
-                <p>Ai task</p>
-            </Link>
+                <div className=' capitalize flex items-center gap-3 border p-4 rounded-lg cursor-pointer' onClick={() =>   window.location.href = '/'}>
+                    <Edit size={25} />
+                    new chat
+                </div>
+                <p className='text-[14px] capitalize'>Engagement</p>
 
-            <div className='w-full h-[1px] bg-gray-400' />
+                <Link href={'/history'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
+                    <History size={25} />
+                    <p>history</p>
+                </Link>
 
-            <p className='text-[14px] capitalize'>Help & Support</p>
+                <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
+                    <Store size={25} />
+                    <p>store</p>
+                </Link>
 
-            <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold'>
-                <HelpCircle size={25} />
-                <p>support</p>
-            </Link>
+                <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
+                    <LayoutDashboard size={25} />
+                    <p>Ai task</p>
+                </Link>
 
-            <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold'>
-                <Gem size={25} />
-                <p>Subscription</p>
-            </Link>
+                <div className='w-full h-[1px] bg-gray-400' />
+
+                <p className='text-[14px] capitalize'>Help & Support</p>
+
+                <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
+                    <HelpCircle size={25} />
+                    <p>support</p>
+                </Link>
+
+                <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
+                    <Gem size={25} />
+                    <p>Subscription</p>
+                </Link>
+
+            </div>
+
+
+
+
+
+            {result && (
+                <div className="flex items-center gap-3 px-4">
+                    <Image
+                        src={result.photo}
+                        width={1000}
+                        height={1000}
+                        alt="avatar"
+                        className="rounded-full w-[50px] h-[50px] object-cover"
+                    />
+                    <div className="text-[15px] text-wrap">
+                        <h1 className=" font-bold">{result.name}</h1>
+                        <p className="text-gray-400 font-medium ">{result.email}</p>
+                    </div>
+                </div>
+
+            )}
+
+
+
 
         </div>
     )
