@@ -5,6 +5,22 @@ import ChatApi from "@/lib/ChatApi";
 import { useSearchParams, useRouter } from "next/navigation";
 import getMessages from "@/lib/getMessages";
 import getLastHistory from "@/lib/lastHistory";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+
+} from "@/components/ui/sheet"
+
+import { History, Store, LayoutDashboard, HelpCircle, Gem, Edit } from 'lucide-react'
+import Link from 'next/link'
+import Image from "next/image";
+import getProfile from "@/lib/getProfile";
+
+
+
 
 
 interface Message {
@@ -13,14 +29,18 @@ interface Message {
 
 }
 
-
+interface Profile {
+  photo: string;
+  name: string;
+  email: string;
+}
 
 
 const Chats = () => {
-
+  const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([])
   const [thinking, setThinking] = useState<boolean>(false)
-
+  const [profile, setProfile] = useState<Profile | null>(null);
   const searchParams = useSearchParams()
   const [conversationId, setConversationId] = useState(searchParams.get("id") || '');
 
@@ -29,6 +49,18 @@ const Chats = () => {
 
 
 
+
+  useEffect(() => {
+
+    const request = async () => {
+      const results = await getProfile()
+      setProfile(results)
+      console.log(results, 'profile')
+    }
+
+    request()
+
+  }, [])
 
 
   useEffect(() => {
@@ -77,8 +109,8 @@ const Chats = () => {
 
   const handleSubmit = async (e: FormData) => {
 
- 
-   
+
+
 
 
 
@@ -92,7 +124,7 @@ const Chats = () => {
 
 
       try {
-        const result = await ChatApi({ content: inputData,  conversationId });
+        const result = await ChatApi({ content: inputData, conversationId });
         const lastHistory = await getLastHistory()
         const botMessage = result?.choices?.[0]?.message?.content;
 
@@ -125,6 +157,83 @@ const Chats = () => {
 
   return (
     <div className="w-full lg:p-7 h-dvh">
+
+
+
+      {/* Sheet  */}
+
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetContent className="bg-black">
+          <SheetHeader>
+            <SheetTitle className="text-white text-2xl font-bold">ChatZaar</SheetTitle>
+            <SheetDescription>
+              <div className='flex flex-col gap-5 px-4 '>
+
+                <div className=' capitalize flex items-center gap-3 border p-4 rounded-lg cursor-pointer' onClick={() => window.location.href = '/'}>
+                  <Edit size={25} />
+                  new chat
+                </div>
+                <p className='text-[14px] capitalize'>Engagement</p>
+
+                <Link href={'/history'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
+                  <History size={25} />
+                  <p>history</p>
+                </Link>
+
+                <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
+                  <Store size={25} />
+                  <p>store</p>
+                </Link>
+
+                <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
+                  <LayoutDashboard size={25} />
+                  <p>Ai task</p>
+                </Link>
+
+                <div className='w-full h-[1px] bg-gray-400' />
+
+                <p className='text-[14px] capitalize'>Help & Support</p>
+
+                <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
+                  <HelpCircle size={25} />
+                  <p>support</p>
+                </Link>
+
+                <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
+                  <Gem size={25} />
+                  <p>Subscription</p>
+                </Link>
+
+              </div>
+
+
+              {profile && (
+                <div className="flex items-center gap-3 px-4">
+                  <Image
+                    src={profile.photo}
+                    width={1000}
+                    height={1000}
+                    alt="avatar"
+                    className="rounded-full w-[50px] h-[50px] object-cover"
+                  />
+                  <div className="text-[15px] text-wrap">
+                    <h1 className=" font-bold">{profile.name}</h1>
+                    <p className="text-gray-400 font-medium ">{profile.email}</p>
+                  </div>
+                </div>
+
+              )}
+            </SheetDescription>
+          </SheetHeader>
+        </SheetContent>
+      </Sheet>
+
+
+
+
+
+
+
       <div className="bg-[linear-gradient(to_right,#EDE9FE,#ffffff)] lg:rounded-3xl h-full grid lg:grid-rows-[1fr_90px] grid-rows-[70px_1fr_90px]">
 
         {/* mobile menu */}
@@ -132,10 +241,10 @@ const Chats = () => {
           <div className='text-[28px] capitalize font-bold '>
             <p>chatZaar</p>
           </div>
-          <Menu size={30} />
+          <Menu size={30} onClick={() => setOpen(true)} />
         </div>
 
-  
+
 
 
         {/* messages */}
