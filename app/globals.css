@@ -165,3 +165,30 @@ body{
   color: white;
   
 }
+
+
+/* Global Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e2021; /* Dark background */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Gray scrollbar thumb */
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Darker on hover */
+}
+
+/* Make scrollbar visible only when scrolling */
+html {
+  scrollbar-width: thin; /* Firefox support */
+  scrollbar-color: #888 #1e2021;
+}

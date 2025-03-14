@@ -1,10 +1,9 @@
 'use client'
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SendHorizonal, Menu } from "lucide-react";
 import ChatApi from "@/lib/ChatApi";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import getMessages from "@/lib/getMessages";
-import getLastHistory from "@/lib/lastHistory";
 import {
   Sheet,
   SheetContent,
@@ -19,7 +18,11 @@ import Link from 'next/link'
 import Image from "next/image";
 import getProfile from "@/lib/getProfile";
 
-
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/github-dark.css";
+import { ObjectId } from 'bson';
 
 
 
@@ -42,11 +45,8 @@ const Chats = () => {
   const [thinking, setThinking] = useState<boolean>(false)
   const [profile, setProfile] = useState<Profile | null>(null);
   const searchParams = useSearchParams()
-  const [conversationId, setConversationId] = useState(searchParams.get("id") || '');
-
-
-  const router = useRouter()
-
+  const [conversationId, setConversationId] = useState<string | null>(searchParams.get("id") || null);
+  const scrollRef = useRef<HTMLDivElement | null>(null)
 
 
 
@@ -55,7 +55,6 @@ const Chats = () => {
     const request = async () => {
       const results = await getProfile()
       setProfile(results)
-      console.log(results, 'profile')
     }
 
     request()
@@ -67,33 +66,8 @@ const Chats = () => {
     const api = async () => {
       try {
         const result = await getMessages({ conversationId });
+        setMessages(result)
 
-
-        setMessages([]);
-
-        result.forEach((value: any) => {
-
-          // Handle System Messages
-          if (value?.data?.messages?.[0]?.role === 'system') {
-
-            setMessages((prev: any) => [
-              ...prev,
-              { content: value.data.messages[0].content, role: "system" }
-            ]);
-          }
-
-          // Handle Assistant Messages from Choices
-          if (value?.data?.choices?.[0]?.message?.role === 'assistant') {
-            const botMessage = value?.data?.choices?.[0]?.message?.content;
-
-            if (botMessage) {
-              setMessages((prev: any) => [
-                ...prev,
-                { content: botMessage, role: "assistant" }
-              ]);
-            }
-          }
-        });
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
@@ -104,36 +78,49 @@ const Chats = () => {
 
 
 
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end'
+      })
+    }
+  }, [messages]);
+
+
+
 
 
 
   const handleSubmit = async (e: FormData) => {
 
-
-
-
-
-
     const inputData: string | null = e.get('input') as string | null
     if (!inputData) return;
     setMessages((prev: any) => [...prev, { content: inputData, role: "system" }]);
 
+    const generateObjectId = () => {
+      return new ObjectId().toHexString();
+    };
+
+    const newId = generateObjectId()
 
 
     if (inputData) {
-
-
+    
       try {
-        const result = await ChatApi({ content: inputData, conversationId });
-        const lastHistory = await getLastHistory()
-        const botMessage = result?.choices?.[0]?.message?.content;
 
-        setConversationId(lastHistory.data.conversationId)
-        router.replace(`/?id=${lastHistory.data.conversationId}`, { scroll: false });
+        if (conversationId == null) {
+          const result = await ChatApi({ content: inputData, conversationId: newId });
+          setMessages((prev: any) => [...prev, result]);
+          history.pushState(null, "", `/?id=${newId}`)
+          setConversationId(newId)
+        } else {
+          const result = await ChatApi({ content: inputData, conversationId });
 
-        if (botMessage) {
-          setMessages((prev: any) => [...prev, { content: botMessage, role: "assistant" }]);
+          setMessages((prev: any) => [...prev, result]);
+          history.pushState(null, "", `/?id=${conversationId}`)
         }
+
       } catch (error) {
         console.log(error)
 
@@ -151,6 +138,11 @@ const Chats = () => {
 
 
   }
+
+
+
+
+
 
 
 
@@ -204,25 +196,31 @@ const Chats = () => {
                   <p>Subscription</p>
                 </Link>
 
+
+
+                {profile && (
+                  <div className="flex items-center gap-3 px-4">
+                    <Image
+                      src={profile.photo}
+                      width={1000}
+                      height={1000}
+                      alt="avatar"
+                      className="rounded-full w-[50px] h-[50px] object-cover"
+                    />
+                    <div className="text-[15px] w-0 min-w-0 flex-1">
+                      <h1 className="font-bold">{profile.name}</h1>
+                      <p className="text-gray-400 text-[12px] font-medium break-words whitespace-normal">
+                        {profile.email}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
               </div>
 
 
-              {profile && (
-                <div className="flex items-center gap-3 px-4">
-                  <Image
-                    src={profile.photo}
-                    width={1000}
-                    height={1000}
-                    alt="avatar"
-                    className="rounded-full w-[50px] h-[50px] object-cover"
-                  />
-                  <div className="text-[15px] text-wrap">
-                    <h1 className=" font-bold">{profile.name}</h1>
-                    <p className="text-gray-400 font-medium ">{profile.email}</p>
-                  </div>
-                </div>
 
-              )}
+
             </SheetDescription>
           </SheetHeader>
         </SheetContent>
@@ -248,9 +246,10 @@ const Chats = () => {
 
 
         {/* messages */}
-        <div className="text-black flex justify-center items-center flex-col overflow-y-auto ">
+        <div className="text-black flex  items-center flex-col overflow-y-auto " >
 
-          <div className={`lg:w-[35rem]  ${messages.length === 0 ? 'block' : 'hidden'}`}>
+          {/* <div ref={scrollRef} /> */}
+          <div className={`lg:w-[35rem]  h-full flex items-center  ${messages.length === 0 ? 'block' : 'hidden'}`}>
             <div className="text-center">
               <h1 className="text-[3rem] font-bold">ChatZaar</h1>
               <p>Interact with ChatZaar, an AI that reflects your input for quick ideas, summaries, or feedback. Perfect for brainstorming or rapid dialogue.</p>
@@ -258,12 +257,27 @@ const Chats = () => {
           </div>
 
           {messages.map((value: any, index: number) => (
-            <div className="2xl:w-[70rem] md:w-[35rem] w-full px-4 md:px-0 my-2" key={index}>
+            <div className="2xl:w-[70rem] md:w-[35rem] w-full px-4 md:px-0 py-3" key={index} >
               <div className={`flex  ${value.role === 'assistant' ? 'justify-normal' : 'justify-end'}`}>
-                <p className="bg-white p-3 rounded-lg shadow-md max-w-[40rem]">{value.content}</p>
+                <p className="bg-white p-3 rounded-lg shadow-md lg:max-w-[40rem] max-w-full break-words ">
+                  <div className="prose prose-sm sm:prose-base md:prose-lg lg:prose-xl max-w-full">
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      rehypePlugins={[rehypeHighlight]}
+                    >
+                      {value.content}
+                    </ReactMarkdown>
+                  </div>
+
+                </p>
+
               </div>
+
             </div>
+
           ))}
+
+          <div ref={scrollRef} />
 
           {thinking && (
             <div className="2xl:w-[70rem] md:w-[35rem] w-full px-4 md:px-0 my-2">
@@ -274,6 +288,9 @@ const Chats = () => {
               </div>
             </div>
           )}
+
+
+
 
 
 
@@ -292,7 +309,7 @@ const Chats = () => {
               className="flex-1 p-3 text-white bg-transparent outline-none placeholder-gray-500 dark:placeholder-gray-400"
             />
 
-            <button type="submit" className="ml-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-xl hover:opacity-90 transition-all cursor-pointer" onClick={() => setThinking(true)}>
+            <button type="submit" className={`ml-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-xl hover:opacity-90 transition-all cursor-pointer ${thinking ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={() => setThinking(true)}>
               <SendHorizonal size={20} />
             </button>
           </div>

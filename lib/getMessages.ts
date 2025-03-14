@@ -3,7 +3,7 @@ import getCookie from "@/services/getCookie";
 
 const getMessages = async ({conversationId,}:{
 
-    conversationId: string,
+    conversationId: string | null,
  
 }) => {
 

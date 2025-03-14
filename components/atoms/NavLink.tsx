@@ -1,10 +1,10 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { History, Store, LayoutDashboard, HelpCircle, Gem, Edit } from 'lucide-react'
+import { History, Store, LayoutDashboard, HelpCircle, Gem, Edit, LogOut } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import getProfile from '@/lib/getProfile'
-
+import { usePathname } from 'next/navigation';
 
 
 
@@ -17,6 +17,7 @@ interface Profile {
 
 const NavLink = () => {
     const [result, setResult] = useState<Profile | null>(null);
+    const pathname = usePathname()
 
     useEffect(() => {
 
@@ -33,23 +34,22 @@ const NavLink = () => {
 
 
 
+
     return (
-        <div className='flex flex-col gap-24'>
+        <div className='flex flex-col'>
 
 
-            <div className='flex flex-col gap-5 px-4 '>
-
-                <div className=' capitalize flex items-center gap-3 border p-4 rounded-lg cursor-pointer' onClick={() =>   window.location.href = '/'}>
+            <div className='flex flex-col gap-4 px-4 overflow-y-auto h-[80dvh]'>
+                <div className=' capitalize flex items-center gap-3 border p-4 rounded-lg cursor-pointer' onClick={() => window.location.href = '/'}>
                     <Edit size={25} />
                     new chat
                 </div>
                 <p className='text-[14px] capitalize'>Engagement</p>
 
-                <Link href={'/history'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
+                <Link href={'/history'} className={`capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021] ${pathname === '/history' && 'bg-[#1e2021]'}`}>
                     <History size={25} />
                     <p>history</p>
                 </Link>
-
                 <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
                     <Store size={25} />
                     <p>store</p>
@@ -74,11 +74,16 @@ const NavLink = () => {
                     <p>Subscription</p>
                 </Link>
 
+
+                <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
+                    <LogOut size={25} />
+                    <p>Log out</p>
+                </Link>
+
+
+
+
             </div>
-
-
-
-
 
             {result && (
                 <div className="flex items-center gap-3 px-4">
@@ -89,13 +94,19 @@ const NavLink = () => {
                         alt="avatar"
                         className="rounded-full w-[50px] h-[50px] object-cover"
                     />
-                    <div className="text-[15px] text-wrap">
-                        <h1 className=" font-bold">{result.name}</h1>
-                        <p className="text-gray-400 font-medium ">{result.email}</p>
+                    <div className="text-[15px] w-0 min-w-0 flex-1">
+                        <h1 className="font-bold">{result.name}</h1>
+                        <p className="text-gray-400 font-medium break-words whitespace-normal">
+                            {result.email}
+                        </p>
                     </div>
                 </div>
-
             )}
+
+
+
+
+
 
 
 

@@ -3,7 +3,7 @@ import getCookie from "@/services/getCookie"
 
 const ChatApi = async ({ content, conversationId }: {
   content: string,
-  conversationId?: string
+  conversationId?: string | null
 }) => {
 
 
@@ -27,7 +27,7 @@ const ChatApi = async ({ content, conversationId }: {
       messages: [
         { role: "system", content }
       ],
-      model: "EchoGPT"
+      model: process.env.NEXT_PUBLIC_AI_MODEL_NAME
     }),
   });
   const data = await response.json();
