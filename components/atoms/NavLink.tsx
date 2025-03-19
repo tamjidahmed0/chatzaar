@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { History, Store, LayoutDashboard, HelpCircle, Gem, Edit, LogOut } from 'lucide-react'
+import { History, HelpCircle, Gem, Edit, LogOut } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import getProfile from '@/lib/getProfile'
@@ -24,7 +24,7 @@ const NavLink = () => {
         const request = async () => {
             const results = await getProfile()
             setResult(results)
-            console.log(results)
+    
         }
 
         request()
@@ -50,21 +50,14 @@ const NavLink = () => {
                     <History size={25} />
                     <p>history</p>
                 </Link>
-                <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
-                    <Store size={25} />
-                    <p>store</p>
-                </Link>
+       
 
-                <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
-                    <LayoutDashboard size={25} />
-                    <p>Ai task</p>
-                </Link>
 
                 <div className='w-full h-[1px] bg-gray-400' />
 
                 <p className='text-[14px] capitalize'>Help & Support</p>
 
-                <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
+                <Link href={'/support'} className={`capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021] ${pathname === '/support' && 'bg-[#1e2021]'}`}>
                     <HelpCircle size={25} />
                     <p>support</p>
                 </Link>
@@ -88,7 +81,7 @@ const NavLink = () => {
             {result && (
                 <div className="flex items-center gap-3 px-4">
                     <Image
-                        src={result.photo}
+                        src={result.photo || '/avatar.png'}
                         width={1000}
                         height={1000}
                         alt="avatar"

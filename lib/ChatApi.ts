@@ -11,7 +11,7 @@ const ChatApi = async ({ content, conversationId, model }: {
   const token = (await getCookie('token'))?.value || ''
   const userId = (await getCookie('user'))?.value || ''
 
-  console.log(conversationId, 'conversation id')
+
   let url = `${process.env.NEXT_PUBLIC_API_URL}/api/chats`;
   if (conversationId) {
     url += `?conversationId=${conversationId}`;

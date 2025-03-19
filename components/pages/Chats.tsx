@@ -4,18 +4,6 @@ import { SendHorizonal, Menu } from "lucide-react";
 import ChatApi from "@/lib/ChatApi";
 import { useSearchParams } from "next/navigation";
 import getMessages from "@/lib/getMessages";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-
-} from "@/components/ui/sheet"
-
-import { History, Store, LayoutDashboard, HelpCircle, Gem, Edit } from 'lucide-react'
-import Link from 'next/link'
-import Image from "next/image";
 import getProfile from "@/lib/getProfile";
 
 import ReactMarkdown from "react-markdown";
@@ -23,6 +11,7 @@ import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 import { ObjectId } from 'bson';
+import SheetMenu from "../atoms/SheetMenu";
 
 
 
@@ -48,7 +37,7 @@ const Chats = () => {
   const [conversationId, setConversationId] = useState<string | null>(searchParams.get("id") || null);
   const scrollRef = useRef<HTMLDivElement | null>(null)
   const [inputValue, setInputValue] = useState<string>("");
-  const [selectedModel, setSelectedModel] = useState<string>("");
+  const [selectedModel, setSelectedModel] = useState<string>("gpt-4o");
 
 
 
@@ -62,7 +51,7 @@ const Chats = () => {
 
 
   useEffect(() => {
-    
+
     localStorage.setItem("selectedModel", selectedModel);
   }, [selectedModel]);
 
@@ -114,7 +103,7 @@ const Chats = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     const formData = new FormData(e.currentTarget);
     const inputData: string | null = formData.get('input') as string | null;
 
@@ -135,12 +124,12 @@ const Chats = () => {
       try {
 
         if (conversationId == null) {
-          const result = await ChatApi({ content: inputData, conversationId: newId, model:selectedModel });
+          const result = await ChatApi({ content: inputData, conversationId: newId, model: selectedModel });
           setMessages((prev: any) => [...prev, result]);
           history.pushState(null, "", `/?id=${newId}`)
           setConversationId(newId)
         } else {
-          const result = await ChatApi({ content: inputData, conversationId, model:selectedModel });
+          const result = await ChatApi({ content: inputData, conversationId, model: selectedModel });
 
           setMessages((prev: any) => [...prev, result]);
           history.pushState(null, "", `/?id=${conversationId}`)
@@ -177,87 +166,7 @@ const Chats = () => {
   return (
     <div className="w-full lg:p-7 h-dvh">
 
-
-
-      {/* Sheet  */}
-
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent className="bg-black">
-          <SheetHeader>
-            <SheetTitle className="text-white text-2xl font-bold">ChatZaar</SheetTitle>
-            <SheetDescription>
-              <div className='flex flex-col gap-5 px-4 '>
-
-                <div className=' capitalize flex items-center gap-3 border p-4 rounded-lg cursor-pointer' onClick={() => window.location.href = '/'}>
-                  <Edit size={25} />
-                  new chat
-                </div>
-                <p className='text-[14px] capitalize'>Engagement</p>
-
-                <Link href={'/history'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
-                  <History size={25} />
-                  <p>history</p>
-                </Link>
-
-                <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
-                  <Store size={25} />
-                  <p>store</p>
-                </Link>
-
-                <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
-                  <LayoutDashboard size={25} />
-                  <p>Ai task</p>
-                </Link>
-
-                <div className='w-full h-[1px] bg-gray-400' />
-
-                <p className='text-[14px] capitalize'>Help & Support</p>
-
-                <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
-                  <HelpCircle size={25} />
-                  <p>support</p>
-                </Link>
-
-                <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
-                  <Gem size={25} />
-                  <p>Subscription</p>
-                </Link>
-
-
-
-                {profile && (
-                  <div className="flex items-center gap-3 px-4">
-                    <Image
-                      src={profile.photo}
-                      width={1000}
-                      height={1000}
-                      alt="avatar"
-                      className="rounded-full w-[50px] h-[50px] object-cover"
-                    />
-                    <div className="text-[15px] w-0 min-w-0 flex-1">
-                      <h1 className="font-bold">{profile.name}</h1>
-                      <p className="text-gray-400 text-[12px] font-medium break-words whitespace-normal">
-                        {profile.email}
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-              </div>
-
-
-
-
-            </SheetDescription>
-          </SheetHeader>
-        </SheetContent>
-      </Sheet>
-
-
-
-
-
-
+      <SheetMenu open={open} setOpen={setOpen} profile={profile} />
 
       <div className="bg-[linear-gradient(to_right,#EDE9FE,#ffffff)] lg:rounded-3xl h-full grid lg:grid-rows-[1fr_90px] grid-rows-[70px_1fr_90px]">
 
@@ -351,12 +260,12 @@ const Chats = () => {
               onChange={handleInputChange}
               placeholder="Type your message..."
               className="flex-1 p-3 text-white bg-transparent outline-none placeholder-gray-500 dark:placeholder-gray-400"
-              
+
             />
 
 
 
-            <button type="submit"  className={`ml-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-xl hover:opacity-90 transition-all cursor-pointer ${thinking ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={() => setThinking(true)}>
+            <button type="submit" className={`ml-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-xl hover:opacity-90 transition-all cursor-pointer ${thinking ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={() => setThinking(true)}>
               <SendHorizonal size={20} />
             </button>
           </div>

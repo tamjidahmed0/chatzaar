@@ -1,9 +1,10 @@
 import React from 'react'
-import History from '@/components/pages/History'
+import Support from '@/components/pages/Support'
+
 
 const page = () => {
   return (
-    <History />
+    <Support />
   )
 }
 
