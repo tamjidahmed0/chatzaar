@@ -118,8 +118,6 @@ const Chats = () => {
     const formData = new FormData(e.currentTarget);
     const inputData: string | null = formData.get('input') as string | null;
 
-    const model: string | null = formData.get('model') as string | null;
-   
 
     if (!inputData) return;
     setMessages((prev: any) => [...prev, { content: inputData, role: "system" }]);
