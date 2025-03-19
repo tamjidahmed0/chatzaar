@@ -47,7 +47,24 @@ const Chats = () => {
   const searchParams = useSearchParams()
   const [conversationId, setConversationId] = useState<string | null>(searchParams.get("id") || null);
   const scrollRef = useRef<HTMLDivElement | null>(null)
+  const [inputValue, setInputValue] = useState<string>("");
+  const [selectedModel, setSelectedModel] = useState<string>("");
 
+
+
+
+  useEffect(() => {
+    const storedModel = localStorage.getItem("selectedModel");
+    if (storedModel) {
+      setSelectedModel(storedModel);
+    }
+  }, []);
+
+
+  useEffect(() => {
+    
+    localStorage.setItem("selectedModel", selectedModel);
+  }, [selectedModel]);
 
 
   useEffect(() => {
@@ -88,15 +105,25 @@ const Chats = () => {
   }, [messages]);
 
 
+  const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedModel(e.target.value);
+    console.log(e.target.value, 'model')
+  };
 
 
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.currentTarget);
+    const inputData: string | null = formData.get('input') as string | null;
 
-  const handleSubmit = async (e: FormData) => {
+    const model: string | null = formData.get('model') as string | null;
+   
 
-    const inputData: string | null = e.get('input') as string | null
     if (!inputData) return;
     setMessages((prev: any) => [...prev, { content: inputData, role: "system" }]);
+    setInputValue("");
 
     const generateObjectId = () => {
       return new ObjectId().toHexString();
@@ -106,16 +133,16 @@ const Chats = () => {
 
 
     if (inputData) {
-    
+
       try {
 
         if (conversationId == null) {
-          const result = await ChatApi({ content: inputData, conversationId: newId });
+          const result = await ChatApi({ content: inputData, conversationId: newId, model:selectedModel });
           setMessages((prev: any) => [...prev, result]);
           history.pushState(null, "", `/?id=${newId}`)
           setConversationId(newId)
         } else {
-          const result = await ChatApi({ content: inputData, conversationId });
+          const result = await ChatApi({ content: inputData, conversationId, model:selectedModel });
 
           setMessages((prev: any) => [...prev, result]);
           history.pushState(null, "", `/?id=${conversationId}`)
@@ -141,7 +168,9 @@ const Chats = () => {
 
 
 
-
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+  };
 
 
 
@@ -299,21 +328,51 @@ const Chats = () => {
 
 
         {/* input box */}
-        <form className=" w-full flex justify-center pb-5 " action={handleSubmit}>
-          <div className="w-[90%] md:w-[70%] flex items-center p-4 bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700">
+
+        <form className=" w-full flex justify-center pb-5" onSubmit={handleSubmit}>
+
+
+          <div className="w-[100%] md:w-[70%] flex items-center p-4 bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700">
+
+            <select
+              name="model"
+              value={selectedModel}
+              onChange={handleModelChange}
+              className="w-full sm:w-auto px-3 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:outline-none text-left truncate"
+            >
+              {/* <option value="gpt-3.5">GPT-3.5</option> */}
+              <option value="gpt-4o">GPT-4o</option>
+              <option value="gpt-4o-mini">GPT-4o mini</option>
+              <option value="DeepSeek-V3">DeepSeek-V3</option>
+            </select>
 
             <input
               type="text"
               name="input"
+              value={inputValue}
+              onChange={handleInputChange}
               placeholder="Type your message..."
               className="flex-1 p-3 text-white bg-transparent outline-none placeholder-gray-500 dark:placeholder-gray-400"
+              
             />
 
-            <button type="submit" className={`ml-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-xl hover:opacity-90 transition-all cursor-pointer ${thinking ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={() => setThinking(true)}>
+
+
+            <button type="submit"  className={`ml-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-xl hover:opacity-90 transition-all cursor-pointer ${thinking ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={() => setThinking(true)}>
               <SendHorizonal size={20} />
             </button>
           </div>
         </form>
+
+
+
+
+
+
+
+
+
+
 
       </div>
 

@@ -1,9 +1,10 @@
 import getCookie from "@/services/getCookie"
 
 
-const ChatApi = async ({ content, conversationId }: {
+const ChatApi = async ({ content, conversationId, model }: {
   content: string,
-  conversationId?: string | null
+  conversationId?: string | null,
+  model: string | null
 }) => {
 
 
@@ -27,7 +28,7 @@ const ChatApi = async ({ content, conversationId }: {
       messages: [
         { role: "system", content }
       ],
-      model: process.env.NEXT_PUBLIC_AI_MODEL_NAME
+      model: model
     }),
   });
   const data = await response.json();
