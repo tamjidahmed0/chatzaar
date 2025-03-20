@@ -35,7 +35,7 @@ const NavLink = () => {
 
     const handleLogout = async () => {
         deleteCookie()
-        router.push('/authenticate')
+        router.replace('/authenticate')
     }
 
 

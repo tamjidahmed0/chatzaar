@@ -30,14 +30,14 @@ const SheetMenu = ({
 
   const router = useRouter()
 
-const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
 
 
   const handleLogout = async () => {
-        deleteCookie()
-        router.push('/authenticate')
-    }
+    deleteCookie()
+    router.replace('/authenticate')
+  }
 
 
 
@@ -53,7 +53,7 @@ const dispatch = useDispatch();
 
             <div className='flex flex-col gap-5 px-4 '>
 
-              <div className=' capitalize flex items-center gap-3 border p-4 rounded-lg cursor-pointer' onClick={() => {window.location.href = '/' ; dispatch(toggleMenu())}}>
+              <div className=' capitalize flex items-center gap-3 border p-4 rounded-lg cursor-pointer' onClick={() => { window.location.href = '/'; dispatch(toggleMenu()) }}>
                 <Edit size={25} />
                 new chat
               </div>
