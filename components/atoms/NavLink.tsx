@@ -4,8 +4,8 @@ import { History, HelpCircle, Gem, Edit, LogOut } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import getProfile from '@/lib/getProfile'
-import { usePathname } from 'next/navigation';
-
+import { usePathname, useRouter } from 'next/navigation';
+import { deleteCookie } from '@/services/deleteCookie'
 
 
 interface Profile {
@@ -18,13 +18,14 @@ interface Profile {
 const NavLink = () => {
     const [result, setResult] = useState<Profile | null>(null);
     const pathname = usePathname()
+    const router = useRouter()
 
     useEffect(() => {
 
         const request = async () => {
             const results = await getProfile()
             setResult(results)
-    
+
         }
 
         request()
@@ -32,14 +33,18 @@ const NavLink = () => {
     }, [])
 
 
+    const handleLogout = async () => {
+        deleteCookie()
+        router.push('/authenticate')
+    }
+
 
 
 
     return (
-        <div className='flex flex-col'>
+        <div className='flex flex-col justify-between  h-[85dvh]'>
 
-
-            <div className='flex flex-col gap-4 px-4 overflow-y-auto h-[80dvh]'>
+            <div className='flex flex-col gap-4 px-4 overflow-y-auto'>
                 <div className=' capitalize flex items-center gap-3 border p-4 rounded-lg cursor-pointer' onClick={() => window.location.href = '/'}>
                     <Edit size={25} />
                     new chat
@@ -50,7 +55,7 @@ const NavLink = () => {
                     <History size={25} />
                     <p>history</p>
                 </Link>
-       
+
 
 
                 <div className='w-full h-[1px] bg-gray-400' />
@@ -62,22 +67,23 @@ const NavLink = () => {
                     <p>support</p>
                 </Link>
 
-                <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
+                <Link href={'/subscription'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
                     <Gem size={25} />
                     <p>Subscription</p>
                 </Link>
 
 
-                <Link href={'/'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
+                <div onClick={handleLogout} className=' cursor-pointer capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
                     <LogOut size={25} />
                     <p>Log out</p>
-                </Link>
+                </div>
 
 
 
 
             </div>
 
+            <div>
             {result && (
                 <div className="flex items-center gap-3 px-4">
                     <Image
@@ -95,6 +101,9 @@ const NavLink = () => {
                     </div>
                 </div>
             )}
+            </div>
+
+          
 
 
 

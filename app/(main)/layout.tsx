@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import SideBar from "@/components/molecules/SideBar";
+import CustomProvider from "@/provider/CustomProvider";
+import MobileHeader from "@/components/molecules/MobileHeader";
 
 
 const geistSans = Geist({
@@ -27,15 +29,26 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-1 `}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col   `}
       >
-     
-      <SideBar />
-  
 
- 
-      {children}
-  
+        <CustomProvider>
+          <div className="grid grid-rows-[90px_1fr] lg:grid-rows-1 h-dvh">
+
+            <div className="bg-[linear-gradient(to_right,#EDE9FE,#ffffff)] lg:hidden ">
+              <MobileHeader />
+            </div>
+
+            <div className="flex flex-1 overflow-y-auto">
+              <SideBar />
+              {children}
+            </div>
+
+          </div>
+
+        </CustomProvider>
+
+
       </body>
     </html>
   );

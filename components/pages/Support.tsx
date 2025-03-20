@@ -3,7 +3,7 @@ import { Mail, LinkedinIcon} from 'lucide-react'
 
 const Support = () => {
     return (
-        <div className="w-full lg:p-7 h-dvh ">
+        <div className="w-full lg:p-7 h-full ">
             <div className='bg-[linear-gradient(to_right,#EDE9FE,#ffffff)] lg:rounded-3xl h-full overflow-y-auto '>
 
                 <div className=' mx-auto max-w-3xl py-16 px-5'>

@@ -1,18 +1,14 @@
 'use client'
 import React, { useEffect, useRef, useState } from "react";
-import { SendHorizonal, Menu } from "lucide-react";
+import { SendHorizonal } from "lucide-react";
 import ChatApi from "@/lib/ChatApi";
 import { useSearchParams } from "next/navigation";
 import getMessages from "@/lib/getMessages";
-import getProfile from "@/lib/getProfile";
-
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 import { ObjectId } from 'bson';
-import SheetMenu from "../atoms/SheetMenu";
-
 
 
 interface Message {
@@ -21,18 +17,13 @@ interface Message {
 
 }
 
-interface Profile {
-  photo: string;
-  name: string;
-  email: string;
-}
+
 
 
 const Chats = () => {
-  const [open, setOpen] = useState(false);
+
   const [messages, setMessages] = useState<Message[]>([])
   const [thinking, setThinking] = useState<boolean>(false)
-  const [profile, setProfile] = useState<Profile | null>(null);
   const searchParams = useSearchParams()
   const [conversationId, setConversationId] = useState<string | null>(searchParams.get("id") || null);
   const scrollRef = useRef<HTMLDivElement | null>(null)
@@ -56,16 +47,6 @@ const Chats = () => {
   }, [selectedModel]);
 
 
-  useEffect(() => {
-
-    const request = async () => {
-      const results = await getProfile()
-      setProfile(results)
-    }
-
-    request()
-
-  }, [])
 
 
   useEffect(() => {
@@ -96,7 +77,7 @@ const Chats = () => {
 
   const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedModel(e.target.value);
-    console.log(e.target.value, 'model')
+    
   };
 
 
@@ -164,22 +145,9 @@ const Chats = () => {
 
 
   return (
-    <div className="w-full lg:p-7 h-dvh">
+    <div className="w-full lg:p-7 h-full">
 
-      <SheetMenu open={open} setOpen={setOpen} profile={profile} />
-
-      <div className="bg-[linear-gradient(to_right,#EDE9FE,#ffffff)] lg:rounded-3xl h-full grid lg:grid-rows-[1fr_90px] grid-rows-[70px_1fr_90px]">
-
-        {/* mobile menu */}
-        <div className="text-black lg:hidden shadow px-6 flex items-center justify-between ">
-          <div className='text-[28px] capitalize font-bold '>
-            <p>chatZaar</p>
-          </div>
-          <Menu size={30} onClick={() => setOpen(true)} />
-        </div>
-
-
-
+      <div className="bg-[linear-gradient(to_right,#EDE9FE,#ffffff)] lg:rounded-3xl h-full  grid lg:grid-rows-[1fr_90px] grid-rows-[1fr_90px]">
 
         {/* messages */}
         <div className="text-black flex  items-center flex-col overflow-y-auto " >
@@ -251,6 +219,7 @@ const Chats = () => {
               <option value="gpt-4o">GPT-4o</option>
               <option value="gpt-4o-mini">GPT-4o mini</option>
               <option value="DeepSeek-V3">DeepSeek-V3</option>
+              <option value="Meta-Llama-3-70B-Instruct">Meta-Llama-3-70B-Instruct</option>
             </select>
 
             <input
@@ -270,16 +239,6 @@ const Chats = () => {
             </button>
           </div>
         </form>
-
-
-
-
-
-
-
-
-
-
 
       </div>
 

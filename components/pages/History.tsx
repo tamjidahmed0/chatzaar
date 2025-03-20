@@ -100,7 +100,7 @@ const History = () => {
 
 
     return (
-        <div className="w-full lg:p-7 h-dvh">
+        <div className="w-full lg:p-7 h-full">
 
 
 
