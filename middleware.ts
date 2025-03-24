@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
         if (pathname !== '/authenticate') {
             return NextResponse.redirect(new URL('/authenticate', request.url));
         }
-    } 
+    }
 
     else if (pathname === '/authenticate') {
         return NextResponse.redirect(new URL('/', request.url));
@@ -23,5 +23,6 @@ export async function middleware(request: NextRequest) {
 
 // Apply middleware to all routes
 export const config = {
-  matcher: ['/','/history', '/authenticate'],
+    matcher: ['/', '/history', '/support', '/subscription', '/authenticate'],
 };
+
