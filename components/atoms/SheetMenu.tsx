@@ -35,7 +35,7 @@ const SheetMenu = ({
 
 
   const handleLogout = async () => {
-    deleteCookie()
+    await deleteCookie()
     router.replace('/authenticate')
   }
 

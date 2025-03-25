@@ -34,7 +34,7 @@ const NavLink = () => {
 
 
     const handleLogout = async () => {
-        deleteCookie()
+        await deleteCookie()
         router.replace('/authenticate')
     }
 
@@ -84,26 +84,26 @@ const NavLink = () => {
             </div>
 
             <div>
-            {result && (
-                <div className="flex items-center gap-3 px-4">
-                    <Image
-                        src={result.photo || '/avatar.png'}
-                        width={1000}
-                        height={1000}
-                        alt="avatar"
-                        className="rounded-full w-[50px] h-[50px] object-cover"
-                    />
-                    <div className="text-[15px] w-0 min-w-0 flex-1">
-                        <h1 className="font-bold">{result.name}</h1>
-                        <p className="text-gray-400 font-medium break-words whitespace-normal">
-                            {result.email}
-                        </p>
+                {result && (
+                    <div className="flex items-center gap-3 px-4">
+                        <Image
+                            src={result.photo || '/avatar.png'}
+                            width={1000}
+                            height={1000}
+                            alt="avatar"
+                            className="rounded-full w-[50px] h-[50px] object-cover"
+                        />
+                        <div className="text-[15px] w-0 min-w-0 flex-1">
+                            <h1 className="font-bold">{result.name}</h1>
+                            <p className="text-gray-400 font-medium break-words whitespace-normal">
+                                {result.email}
+                            </p>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
             </div>
 
-          
+
 
 
 

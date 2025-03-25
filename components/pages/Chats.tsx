@@ -77,7 +77,7 @@ const Chats = () => {
 
   const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedModel(e.target.value);
-    
+
   };
 
 
@@ -136,7 +136,7 @@ const Chats = () => {
 
 
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setInputValue(event.target.value);
   };
 
@@ -147,7 +147,7 @@ const Chats = () => {
   return (
     <div className="w-full lg:p-7 h-full">
 
-      <div className="bg-[linear-gradient(to_right,#EDE9FE,#ffffff)] lg:rounded-3xl h-full  grid lg:grid-rows-[1fr_90px] grid-rows-[1fr_90px]">
+      <div className="bg-[linear-gradient(to_right,#EDE9FE,#ffffff)] lg:rounded-3xl h-full  grid grid-rows-[1fr_160px]">
 
         {/* messages */}
         <div className="text-black flex  items-center flex-col overflow-y-auto " >
@@ -207,37 +207,47 @@ const Chats = () => {
         <form className=" w-full flex justify-center pb-5" onSubmit={handleSubmit}>
 
 
-          <div className="w-[100%] md:w-[70%] flex items-center p-4 bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700">
-
-            <select
-              name="model"
-              value={selectedModel}
-              onChange={handleModelChange}
-              className="w-full sm:w-auto px-3 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:outline-none text-left truncate"
-            >
-              {/* <option value="gpt-3.5">GPT-3.5</option> */}
-              <option value="gpt-4o">GPT-4o</option>
-              <option value="gpt-4o-mini">GPT-4o mini</option>
-              <option value="DeepSeek-V3">DeepSeek-V3</option>
-              <option value="Meta-Llama-3-70B-Instruct">Meta-Llama-3-70B-Instruct</option>
-            </select>
-
-            <input
-              type="text"
-              name="input"
-              value={inputValue}
-              onChange={handleInputChange}
-              placeholder="Type your message..."
-              className="flex-1 p-3 text-white bg-transparent outline-none placeholder-gray-500 dark:placeholder-gray-400"
-
-            />
+          <div className="lg:w-[70%] w-[90%] flex flex-col gap-1 p-4 bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700">
 
 
+            <div className="w-full flex items-center">
+        
+              <textarea
+                name="input"
+                value={inputValue}
+                onChange={handleInputChange}
+                placeholder="Type your message..."
+                className="flex-1 p-3 text-white bg-transparent outline-none placeholder-gray-500 dark:placeholder-gray-400 resize-none"
+                rows={2} 
+                
+              ></textarea>
 
-            <button type="submit" className={`ml-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-xl hover:opacity-90 transition-all cursor-pointer ${thinking ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={() => setThinking(true)}>
-              <SendHorizonal size={20} />
-            </button>
+
+              <button type="submit" className={`ml-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-xl hover:opacity-90 transition-all cursor-pointer ${thinking ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={() => setThinking(true)}>
+                <SendHorizonal size={20} />
+              </button>
+            </div>
+
+
+            <div className="lg:w-full w-40">
+              <select
+                name="model"
+                value={selectedModel}
+                onChange={handleModelChange}
+                className="w-full sm:w-auto px-3 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:outline-none text-left truncate"
+              >
+
+                <option value="gpt-4o">GPT-4o</option>
+                <option value="gpt-4o-mini">GPT-4o mini</option>
+                <option value="DeepSeek-V3">DeepSeek-V3</option>
+                <option value="Meta-Llama-3-70B-Instruct">Meta-Llama-3-70B-Instruct</option>
+              </select>
+            </div>
+
+
+
           </div>
+
         </form>
 
       </div>
