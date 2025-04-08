@@ -12,7 +12,7 @@ import { History, HelpCircle, Gem, Edit, LogOut } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { deleteCookie } from '@/services/deleteCookie'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useDispatch } from 'react-redux'
 import { toggleMenu } from '@/features/mobileMenuSlice'
 
@@ -29,6 +29,7 @@ const SheetMenu = ({
 }) => {
 
   const router = useRouter()
+  const pathname = usePathname()
 
   const dispatch = useDispatch();
 
@@ -59,7 +60,7 @@ const SheetMenu = ({
               </div>
               <p className='text-[14px] capitalize'>Engagement</p>
 
-              <Link href={'/history'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]' onClick={() => dispatch(toggleMenu())}>
+              <Link href={'/history'} className={`capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021] ${pathname === '/history' && 'bg-[#1e2021]'}`} onClick={() => dispatch(toggleMenu())}>
                 <History size={25} />
                 <p>history</p>
               </Link>
@@ -70,12 +71,12 @@ const SheetMenu = ({
 
               <p className='text-[14px] capitalize'>Help & Support</p>
 
-              <Link href={'/support'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]' onClick={() => dispatch(toggleMenu())}>
+              <Link href={'/support'} className={`capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021] ${pathname === '/support' && 'bg-[#1e2021]'}`} onClick={() => dispatch(toggleMenu())}>
                 <HelpCircle size={25} />
                 <p>support</p>
               </Link>
 
-              <Link href={'/subscription'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]' onClick={() => dispatch(toggleMenu())}>
+              <Link href={'/subscription'} className={`capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021] ${pathname === '/subscription' && 'bg-[#1e2021]'}`} onClick={() => dispatch(toggleMenu())}>
                 <Gem size={25} />
                 <p>Subscription</p>
               </Link>

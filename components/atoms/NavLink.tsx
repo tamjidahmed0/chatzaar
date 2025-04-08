@@ -67,7 +67,7 @@ const NavLink = () => {
                     <p>support</p>
                 </Link>
 
-                <Link href={'/subscription'} className=' capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021]'>
+                <Link href={'/subscription'} className={`capitalize flex items-center gap-3 font-semibold p-3 rounded-lg hover:bg-[#1e2021] ${pathname === '/subscription' && 'bg-[#1e2021]'}`}>
                     <Gem size={25} />
                     <p>Subscription</p>
                 </Link>
@@ -82,6 +82,7 @@ const NavLink = () => {
 
 
             </div>
+
 
             <div>
                 {result && (

@@ -29,7 +29,7 @@ interface Chat {
     data: {
         content: string;
         messages: { content: string }[]
-     
+
 
     };
 
@@ -41,8 +41,8 @@ const History = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [conversationId, setconversatonId] = useState<string | null>(null)
     const [history, setHistory] = useState<Chat[]>([])
-    const [loading , setLoading] = useState <boolean> (true)
-
+    const [loading, setLoading] = useState<boolean>(true)
+    const [deleteLoading, setDeleteLoading] = useState<boolean>(false)
 
 
 
@@ -57,7 +57,7 @@ const History = () => {
 
             } catch (error) {
                 console.log(error)
-            }finally{
+            } finally {
                 setLoading(false)
             }
         }
@@ -79,19 +79,24 @@ const History = () => {
 
 
     const handleDelete = async () => {
+        setDeleteLoading(true)
 
         try {
             const result = await deleteHistory(conversationId)
+            if (result) {
+                setDeleteLoading(false)
+            }
             setHistory(result)
         } catch (error) {
             console.log(error)
+            setDeleteLoading(false)
         }
 
     }
 
 
 
-    if(loading){
+    if (loading) {
         return <SkeletonChatHistory />
     }
 
@@ -101,6 +106,23 @@ const History = () => {
 
     return (
         <div className="w-full lg:p-7 h-full">
+            {deleteLoading && (
+                <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/70 backdrop-blur-xs ">
+                    <div className='bg-white rounded-lg w-72 text-black h-40  flex items-center justify-center mb-4'>
+
+
+                        <div className="flex flex-col items-center justify-center ">
+                            <div className="w-12 h-12 border-4 border-t-transparent border-blue-500 rounded-full animate-spin mb-4" />
+                            <p className="text-lg font-medium tracking-wide">Deleting please wait...</p>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            )}
+
+
 
 
 
@@ -146,7 +168,7 @@ const History = () => {
                                         <div>
                                             <p className="font-semibold">{chat.data.messages[0]?.content}</p>
                                             <span className="text-sm text-gray-400">
-                                               Last updated: {chat.updatedAt ? moment(chat.updatedAt).format("MMM D YYYY hh:mm A") : "N/A"}
+                                                Last updated: {chat.updatedAt ? moment(chat.updatedAt).format("MMM D YYYY hh:mm A") : "N/A"}
                                             </span>
 
                                         </div>

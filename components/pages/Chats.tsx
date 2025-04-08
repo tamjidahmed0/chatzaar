@@ -9,6 +9,7 @@ import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 import { ObjectId } from 'bson';
+import ConversationSkeleton from "@/skeleton/ConversationSkeleton";
 
 
 interface Message {
@@ -29,7 +30,7 @@ const Chats = () => {
   const scrollRef = useRef<HTMLDivElement | null>(null)
   const [inputValue, setInputValue] = useState<string>("");
   const [selectedModel, setSelectedModel] = useState<string>("gpt-4o");
-
+  const [loading, setLoading] = useState<boolean>(true)
 
 
 
@@ -51,17 +52,31 @@ const Chats = () => {
 
   useEffect(() => {
     const api = async () => {
+      setLoading(true)
       try {
         const result = await getMessages({ conversationId });
         setMessages(result)
 
+
       } catch (error) {
         console.error("Error fetching messages:", error);
+
+      } finally {
+        setLoading(false)
       }
     };
 
     api();
   }, [conversationId]);
+
+  useEffect(() => {
+
+    if (conversationId === null) {
+      setLoading(false)
+    }
+
+
+  }, [])
 
 
 
@@ -152,15 +167,51 @@ const Chats = () => {
         {/* messages */}
         <div className="text-black flex  items-center flex-col overflow-y-auto " >
 
-          {/* <div ref={scrollRef} /> */}
-          <div className={`lg:w-[35rem]  h-full flex items-center  ${messages.length === 0 ? 'block' : 'hidden'}`}>
-            <div className="text-center">
-              <h1 className="text-[3rem] font-bold">ChatZaar</h1>
-              <p>Interact with ChatZaar, an AI that reflects your input for quick ideas, summaries, or feedback. Perfect for brainstorming or rapid dialogue.</p>
-            </div>
-          </div>
 
-          {messages.map((value: any, index: number) => (
+
+
+
+          {loading ? (
+            <ConversationSkeleton />
+          ) : (
+
+            <>
+
+              {/* <div ref={scrollRef} /> */}
+              <div className={`lg:w-[35rem]  h-full flex items-center  ${messages.length === 0 ? 'block' : 'hidden'}`}>
+                <div className="text-center">
+                  <h1 className="text-[3rem] font-bold">ChatZaar</h1>
+                  <p>Interact with ChatZaar, an AI that reflects your input for quick ideas, summaries, or feedback. Perfect for brainstorming or rapid dialogue.</p>
+                </div>
+              </div>
+              {messages.map((value: any, index: number) => (
+                <div className="2xl:w-[70rem] md:w-[35rem] w-full px-4 md:px-0 py-3" key={index} >
+                  <div className={`flex  ${value.role === 'assistant' ? 'justify-normal' : 'justify-end'}`}>
+                    <p className="bg-white p-3 rounded-lg shadow-md lg:max-w-[40rem] max-w-full break-words ">
+                      <div className="prose prose-sm sm:prose-base md:prose-lg lg:prose-xl max-w-full">
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          rehypePlugins={[rehypeHighlight]}
+                        >
+                          {value.content}
+                        </ReactMarkdown>
+                      </div>
+
+                    </p>
+
+                  </div>
+
+                </div>
+
+              ))}
+
+
+            </>
+          )}
+
+
+
+          {/* {messages.map((value: any, index: number) => (
             <div className="2xl:w-[70rem] md:w-[35rem] w-full px-4 md:px-0 py-3" key={index} >
               <div className={`flex  ${value.role === 'assistant' ? 'justify-normal' : 'justify-end'}`}>
                 <p className="bg-white p-3 rounded-lg shadow-md lg:max-w-[40rem] max-w-full break-words ">
@@ -179,7 +230,7 @@ const Chats = () => {
 
             </div>
 
-          ))}
+          ))} */}
 
           <div ref={scrollRef} />
 
@@ -193,12 +244,6 @@ const Chats = () => {
             </div>
           )}
 
-
-
-
-
-
-
         </div>
 
 
@@ -211,15 +256,15 @@ const Chats = () => {
 
 
             <div className="w-full flex items-center">
-        
+
               <textarea
                 name="input"
                 value={inputValue}
                 onChange={handleInputChange}
                 placeholder="Type your message..."
                 className="flex-1 p-3 text-white bg-transparent outline-none placeholder-gray-500 dark:placeholder-gray-400 resize-none"
-                rows={2} 
-                
+                rows={2}
+
               ></textarea>
 
 
