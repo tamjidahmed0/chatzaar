@@ -22,7 +22,6 @@ interface Message {
 
 
 const Chats = () => {
-
   const [messages, setMessages] = useState<Message[]>([])
   const [thinking, setThinking] = useState<boolean>(false)
   const searchParams = useSearchParams()
@@ -67,7 +66,9 @@ const Chats = () => {
     };
 
     api();
-  }, [conversationId]);
+  }, []);
+
+
 
   useEffect(() => {
 
@@ -76,7 +77,7 @@ const Chats = () => {
     }
 
 
-  }, [])
+  })
 
 
 
@@ -126,7 +127,6 @@ const Chats = () => {
           setConversationId(newId)
         } else {
           const result = await ChatApi({ content: inputData, conversationId, model: selectedModel });
-
           setMessages((prev: any) => [...prev, result]);
           history.pushState(null, "", `/?id=${conversationId}`)
         }
@@ -162,13 +162,10 @@ const Chats = () => {
   return (
     <div className="w-full lg:p-7 h-full">
 
-      <div className="bg-[linear-gradient(to_right,#EDE9FE,#ffffff)] lg:rounded-3xl h-full  grid grid-rows-[1fr_160px]">
+      <div className="bg-[linear-gradient(to_right,#EDE9FE,#ffffff)] lg:rounded-3xl h-full grid grid-rows-[1fr_160px]">
 
         {/* messages */}
         <div className="text-black flex  items-center flex-col overflow-y-auto " >
-
-
-
 
 
           {loading ? (
@@ -177,12 +174,13 @@ const Chats = () => {
 
             <>
 
-              {/* <div ref={scrollRef} /> */}
               <div className={`lg:w-[35rem]  h-full flex items-center  ${messages.length === 0 ? 'block' : 'hidden'}`}>
+                
                 <div className="text-center">
                   <h1 className="text-[3rem] font-bold">ChatZaar</h1>
                   <p>Interact with ChatZaar, an AI that reflects your input for quick ideas, summaries, or feedback. Perfect for brainstorming or rapid dialogue.</p>
                 </div>
+
               </div>
               {messages.map((value: any, index: number) => (
                 <div className="2xl:w-[70rem] md:w-[35rem] w-full px-4 md:px-0 py-3" key={index} >
@@ -210,27 +208,6 @@ const Chats = () => {
           )}
 
 
-
-          {/* {messages.map((value: any, index: number) => (
-            <div className="2xl:w-[70rem] md:w-[35rem] w-full px-4 md:px-0 py-3" key={index} >
-              <div className={`flex  ${value.role === 'assistant' ? 'justify-normal' : 'justify-end'}`}>
-                <p className="bg-white p-3 rounded-lg shadow-md lg:max-w-[40rem] max-w-full break-words ">
-                  <div className="prose prose-sm sm:prose-base md:prose-lg lg:prose-xl max-w-full">
-                    <ReactMarkdown
-                      remarkPlugins={[remarkGfm]}
-                      rehypePlugins={[rehypeHighlight]}
-                    >
-                      {value.content}
-                    </ReactMarkdown>
-                  </div>
-
-                </p>
-
-              </div>
-
-            </div>
-
-          ))} */}
 
           <div ref={scrollRef} />
 

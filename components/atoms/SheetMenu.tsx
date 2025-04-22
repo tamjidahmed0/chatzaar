@@ -47,9 +47,12 @@ const SheetMenu = ({
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent className="bg-black">
         <SheetHeader>
-          <SheetTitle className="text-white text-2xl font-bold">ChatZaar</SheetTitle>
+          <SheetTitle className="text-white text-2xl font-bold flex gap-2 items-center">
+            <Image src={'/logo.png'} alt='logo' width={100} height={100} className='w-[2rem] h-[2rem] object-cover' />
+            <p>ChatZaar</p>
+          </SheetTitle>
 
-          <SheetDescription className='flex flex-col justify-between h-[90dvh]'>
+          <SheetDescription className='flex flex-col justify-between h-[90dvh] mt-6'>
 
 
             <div className='flex flex-col gap-5 px-4 '>
