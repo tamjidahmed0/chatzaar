@@ -176,9 +176,6 @@ const Chats = () => {
   };
 
 
-  console.log(messages)
-
-
 
   return (
     <div className="w-full lg:p-7 h-full">
@@ -229,13 +226,6 @@ const Chats = () => {
               ))}
 
 
-            </>
-          )}
-
-
-
-          <div ref={scrollRef} />
-
           {thinking && (
             <div className="2xl:w-[70rem] md:w-[35rem] w-full px-4 md:px-0 my-2">
               <div className="flex justify-normal">
@@ -245,6 +235,24 @@ const Chats = () => {
               </div>
             </div>
           )}
+
+
+            </>
+          )}
+
+
+
+          <div ref={scrollRef} />
+{/* 
+          {thinking && (
+            <div className="2xl:w-[70rem] md:w-[35rem] w-full px-4 md:px-0 my-2">
+              <div className="flex justify-normal">
+                <p className="thinking-text  p-3 rounded-lg shadow-md max-w-[40rem] italic">
+                  Thinking...
+                </p>
+              </div>
+            </div>
+          )} */}
 
         </div>
 
