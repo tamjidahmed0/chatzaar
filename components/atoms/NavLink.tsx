@@ -42,7 +42,9 @@ const NavLink = () => {
 
 
     return (
-        <div className='flex flex-col justify-between  h-[85dvh]'>
+
+        //  h-[85dvh]
+        <div className='flex flex-col justify-between  h-[70dvh]'>
 
             <div className='flex flex-col gap-4 px-4 overflow-y-auto'>
                 <div className=' capitalize flex items-center gap-3 border p-4 rounded-lg cursor-pointer' onClick={() => window.location.href = '/'}>

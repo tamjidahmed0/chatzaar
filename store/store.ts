@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import mobileMenuReducer from '../features/mobileMenuSlice'
+import creditReducer from '../features/credit'
 
 export const store = configureStore({
   reducer: {
     mobileMenu: mobileMenuReducer,
+    credit: creditReducer,
   },
 })
 

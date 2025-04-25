@@ -13,9 +13,7 @@ const SignIn = () => {
 
 
   useEffect(() => {
-    console.log(userId)
-
-
+   
     const saveCookie = async () => {
 
       if (token && userId) {
@@ -57,8 +55,8 @@ const SignIn = () => {
   return (
     <div className="flex items-center justify-center min-h-dvh bg-gray-100 p-4">
       <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md text-center">
-        <div className="mb-6">
-    
+        <div className="mb-6 flex items-center gap-2 justify-center">
+          <Image src={'/logo.png'} alt='logo' width={100} height={100} className='w-[2rem] h-[2rem] object-cover' />
           <h2 className="text-2xl font-semibold mt-2 text-black capitalize">chatZaar</h2>
         </div>
         <button className="flex items-center justify-center w-full bg-purple-600 cursor-pointer text-white py-2 rounded-lg shadow-md hover:bg-purple-700 transition" onClick={() => router.push(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/google`)}>

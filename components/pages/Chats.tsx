@@ -10,7 +10,11 @@ import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 import { ObjectId } from 'bson';
 import ConversationSkeleton from "@/skeleton/ConversationSkeleton";
-
+import Image from "next/image";
+import { toast } from "sonner"
+import moment from "moment";
+import { useDispatch } from "react-redux";
+import { creditAction } from "@/features/credit";
 
 interface Message {
   content: string;
@@ -30,7 +34,7 @@ const Chats = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const [selectedModel, setSelectedModel] = useState<string>("gpt-4o");
   const [loading, setLoading] = useState<boolean>(true)
-
+  const dispatch = useDispatch();
 
 
   useEffect(() => {
@@ -122,19 +126,35 @@ const Chats = () => {
 
         if (conversationId == null) {
           const result = await ChatApi({ content: inputData, conversationId: newId, model: selectedModel });
-          setMessages((prev: any) => [...prev, result]);
-          history.pushState(null, "", `/?id=${newId}`)
-          setConversationId(newId)
+
+          if(result.status === 403){
+            const localTime = moment(result.msg).local().format("DD MMMM YYYY, hh:mm A");
+            toast.error(`Please wait until: ${localTime}`);
+          }else{
+     
+            setMessages((prev: any) => [...prev, result?.message]);
+            dispatch(creditAction(result.credits))
+            history.pushState(null, "", `/?id=${newId}`)
+            setConversationId(newId)
+          }
+         
         } else {
           const result = await ChatApi({ content: inputData, conversationId, model: selectedModel });
-          setMessages((prev: any) => [...prev, result]);
-          history.pushState(null, "", `/?id=${conversationId}`)
+          if(result.status === 403){
+            const localTime = moment(result.msg).local().format("DD MMMM YYYY, hh:mm A");     
+            toast.error(`Please wait until: ${localTime}`);
+          }else{
+            setMessages((prev: any) => [...prev, result?.message]);
+            dispatch(creditAction(result?.credits))
+            history.pushState(null, "", `/?id=${conversationId}`)
+          }
+       
         }
 
       } catch (error) {
         console.log(error)
 
-      } finally {
+      } finally { 
         setThinking(false)
       }
 
@@ -156,11 +176,13 @@ const Chats = () => {
   };
 
 
+  console.log(messages)
 
 
 
   return (
     <div className="w-full lg:p-7 h-full">
+         
 
       <div className="bg-[linear-gradient(to_right,#EDE9FE,#ffffff)] lg:rounded-3xl h-full grid grid-rows-[1fr_160px]">
 
@@ -174,28 +196,31 @@ const Chats = () => {
 
             <>
 
-              <div className={`lg:w-[35rem]  h-full flex items-center  ${messages.length === 0 ? 'block' : 'hidden'}`}>
+              <div className={`lg:w-[35rem] h-full flex items-center  ${messages.length === 0 ? 'block' : 'hidden'}`}>
                 
-                <div className="text-center">
+                <div className="text-center ">
+                  <div className="flex items-center gap-2 justify-center mb-3 ">
+                  <Image src={'/logo.png'} alt='logo' width={100} height={100} className='w-[3rem] h-[3rem] object-cover' />
                   <h1 className="text-[3rem] font-bold">ChatZaar</h1>
+                  </div>
                   <p>Interact with ChatZaar, an AI that reflects your input for quick ideas, summaries, or feedback. Perfect for brainstorming or rapid dialogue.</p>
                 </div>
 
               </div>
               {messages.map((value: any, index: number) => (
                 <div className="2xl:w-[70rem] md:w-[35rem] w-full px-4 md:px-0 py-3" key={index} >
-                  <div className={`flex  ${value.role === 'assistant' ? 'justify-normal' : 'justify-end'}`}>
-                    <p className="bg-white p-3 rounded-lg shadow-md lg:max-w-[40rem] max-w-full break-words ">
+                  <div className={`flex  ${value?.role === 'assistant' ? 'justify-normal' : 'justify-end'}`}>
+                    <span className="bg-white p-3 rounded-lg shadow-md lg:max-w-[40rem] max-w-full break-words ">
                       <div className="prose prose-sm sm:prose-base md:prose-lg lg:prose-xl max-w-full">
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm]}
                           rehypePlugins={[rehypeHighlight]}
                         >
-                          {value.content}
+                          {value?.content}
                         </ReactMarkdown>
                       </div>
 
-                    </p>
+                    </span>
 
                   </div>
 

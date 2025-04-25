@@ -15,7 +15,7 @@ import { deleteCookie } from '@/services/deleteCookie'
 import { useRouter, usePathname } from 'next/navigation'
 import { useDispatch } from 'react-redux'
 import { toggleMenu } from '@/features/mobileMenuSlice'
-
+import { useSelector } from 'react-redux'
 
 
 const SheetMenu = ({
@@ -32,7 +32,7 @@ const SheetMenu = ({
   const pathname = usePathname()
 
   const dispatch = useDispatch();
-
+  const creditValue = useSelector((state: any) => state.credit.credit)
 
 
   const handleLogout = async () => {
@@ -56,6 +56,10 @@ const SheetMenu = ({
 
 
             <div className='flex flex-col gap-5 px-4 '>
+
+              <div className='bg-[#1e2021] rounded font-semibold p-3  text-[14px]'>
+                <h1>{creditValue} {creditValue ? 'credits' : 'credit'}</h1>
+              </div>
 
               <div className=' capitalize flex items-center gap-3 border p-4 rounded-lg cursor-pointer' onClick={() => { window.location.href = '/'; dispatch(toggleMenu()) }}>
                 <Edit size={25} />
