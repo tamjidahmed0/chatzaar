@@ -319,8 +319,6 @@
 
 
 
-
-
 'use client'
 import React, { useEffect, useRef, useState } from "react";
 import { SendHorizonal } from "lucide-react";
@@ -451,14 +449,13 @@ const Chats = () => {
           dispatch(creditAction(result.credits));
         }
         
+        // Update URL and state for new conversations
         if (!conversationId) {
           setConversationId(newId);
           if (typeof window !== 'undefined') {
-            window.history.pushState(null, "", `/?id=${newId}`);
-          }
-        } else {
-          if (typeof window !== 'undefined') {
-            window.history.pushState(null, "", `/?id=${conversationId}`);
+            const url = new URL(window.location.href);
+            url.searchParams.set('id', newId);
+            window.history.pushState({}, '', url.toString());
           }
         }
       }
