@@ -9,7 +9,7 @@ const deleteHistory = async (conversationId: string | null) => {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
-            'user_id': userId,
+            'user-id': userId,
         },
     });
 

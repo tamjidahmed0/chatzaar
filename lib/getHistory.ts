@@ -12,7 +12,7 @@ const getHistory = async () => {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
-            'user_id': userId,
+            'user-id': userId,
         },
     });
     const data = await response.json();
